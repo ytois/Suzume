@@ -11,8 +11,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.showTimeline",
-    "onCommand:extension.postTweet"
+    "*"
   ],
   "main": "./extension",
   "contributes": {
