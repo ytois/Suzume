@@ -1,30 +1,34 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
+const Twitter = require('./twitter');
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 function activate(context) {
+  console.log('"Suzume" is now active!');
+  const client = new Twitter();
 
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "tori" is now active!');
+  let showTimeline = vscode.commands.registerCommand(
+    'extension.showTimeline',
+    function() {
+      client.timeline(timelines => {
+        vscode.window.showQuickPick(timelines).then(select => {
+          vscode.window.showInformationMessage(select.description);
+        });
+      });
+    }
+  );
 
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with  registerCommand
-    // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.sayHello', function () {
-        // The code you place here will be executed every time your command is executed
+  let postTweet = vscode.commands.registerCommand(
+    'extension.postTweet',
+    function() {
+      vscode.window.showInputBox().then(text => {
+        client.tweet(text);
+      });
+    }
+  );
 
-        // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World!');
-    });
-
-    context.subscriptions.push(disposable);
+  context.subscriptions.push(showTimeline);
+  context.subscriptions.push(postTweet);
 }
 exports.activate = activate;
 
-// this method is called when your extension is deactivated
-function deactivate() {
-}
+function deactivate() {}
 exports.deactivate = deactivate;
